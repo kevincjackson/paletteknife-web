@@ -2,77 +2,69 @@ import React from "react";
 import {
   BrowserRouter as Router,
   Link,
-  useLocation
+  useLocation,
+  useContext
 } from "react-router-dom";
 import Stepper from "./stepper";
 import Hsl from "./hsl";
 
-// Keep as is or get useContext error.
+// React-router requires keeping query as a React child object.
 export default function App() {
   return (
     <Router>
-      <Steps />
+      <ColorLayout />
     </Router>
   );
 }
 
-function Steps() {
+function ColorLayout(props) {
   const query = new URLSearchParams(useLocation().search);
-  const a =  Hsl.rand();
-  const b =  Hsl.rand();
-  //const a = query.get("a") || Hsl.rand();
-  //const b = query.get("b") || Hsl.rand();
-  //const steps = query.get("steps") || 4;
-  const steps = 4;
-  //const cs = Stepper.stepO(a,b,steps);
-  //const hite = 100 / colors.length;
-  //const c2 = colors.map(c => ColorBlock(c, hite));
-  const cs = Stepper.stepO(a,b,steps); 
-  const css = cs.map(c => Hsl.toCss(c));
-  const hite = 100 / css.length;
-  const cblocks = css.map(c => ColorBlock(c,hite));
-
-  return (
-    <Router>
-      <div>
-        <div>
-          <div style={{ height: "5vh" }}>
-            {JSON.stringify(hite)}
-            {/*<Debug a={a} b={b} steps={steps} />*/}
-          </div>
-          <div style={{ height: "95vh" }}>
-            {cblocks}
-          </div>
-        </div>
-      </div>
-    </Router>
-  );
+  const args = getArgs(query); // { a, b, steps }
+  const validatedArgs = validate(args);
+  const colorContentList = [validatedArgs.a, validatedArgs.b]; //[a,b];
+  const colorLayout = <div style={{backgroundColor: "orange"}}>{JSON.stringify(args.a)}</div>;
+  return Debug(validatedArgs);
 }
 
-function ColorList() {
-  const query = new URLSearchParams(useLocation().search);
-  const a = query.get("a") || Hsl.rand();
-  const b = query.get("b") || Hsl.rand();
-  const steps = query.get("steps") || 4;
-  const colors = Stepper.stepO(a,b,steps).map(c => Hsl.toCss(c));
-  const hite = 100 / colors.length;
-  return colors.map(c => ColorBlock(c, hite));
+// React-Router Query -> { a: Hsl?, b: Hsl?, steps: Int? }
+function getArgs(query) {
+  return { 
+    a: query.get("a") || Hsl.encode(Hsl.rand()), 
+    b: query.get("b") || Hsl.encode(Hsl.rand()), 
+    steps: query.get("steps") || "4"
+  }
 }
 
-function ColorBlock(bgcol, hite) {
-  return (
-    <div style={{ backgroundColor: bgcol, width: "100%", height: hite.toString() + "%" }}>
-      {bgcol}
-    </div>
-  )
+// { a: Hsl, b: Hsl, steps: Int } -> 
+// [{ a: Hsl, aError: String? }, { steps: Int, stepsError: String? }, { b: Hsl, bError: String? } ]
+function validate(args) {
+  var valArgs = [];
+
+  const maybeA = Hsl.try_decode(args.a)
+  if (maybeA) {
+    valArgs.push({ a: maybeA, error: null });
+  } else {
+    valArgs.push({ a: args.a, error: "Ooops! Something's wrong with a."});
+  }
+
+  const maybeSteps = parseInt(args.steps);
+  if (maybeSteps) {
+    valArgs.push({ steps: maybeSteps, error: null });
+  }
+  else {
+    valArgs.push({ steps: args.steps, error: "Ooops Something's wrong with steps." });
+  }
+
+  const maybeB = Hsl.try_decode(args.b)
+  if (maybeB) {
+    valArgs.push({ b: maybeB, error: null });
+  } else {
+    valArgs.push({ b: args.b, error: "Ooops! Something's wrong with b." });
+  }
+
+  return valArgs
 }
 
-function Debug({ a, b, steps }) {
-  return (
-    <div>
-      <span>a={a ? a : null}</span>
-      <span>,b={b ? b : "null"}</span>
-      <span>,steps={steps ? steps : "null"}</span>
-    </div>
-  );
+function Debug(params) {
+  return <div>{JSON.stringify(params)}</div>;
 }
