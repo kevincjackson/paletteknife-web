@@ -21,12 +21,10 @@ function ColorLayout(props) {
   const query = new URLSearchParams(useLocation().search);
   const args = getArgs(query); // { a, b, steps }
   const validatedArgs = validate(args); // { a, b, steps, aError, bError, stepsError }
-  const colorContentList = getColorContentList(validatedArgs); // [{ hsl, content }]
-  // const colorLayout = <div style={{backgroundColor: "orange"}}>{JSON.stringify(args.a)}</div>; // [div]
+  const colorList = getColorContentList(validatedArgs); // [{ hsl, content }]
   return (
-    <div>
-      <Debug params={validatedArgs} /><br />
-      <Debug params={colorContentList} /><br />
+    <div style={{height: "95vh"}}>
+        {layout(colorList)}
     </div>
   )
 }
@@ -61,21 +59,34 @@ function validate(args) {
 // { a: Hsl, b: Hsl, steps: Int?, aError: String?, bError: String?, stepsError: String } =>
 // [{ color: String, content: String }];
 function getColorContentList(valArgs) {
-    // Happy Path
-    if (valArgs.aError == null && valArgs.bError == null && valArgs.stepsError == null) {
-       return Stepper.stepO(valArgs.a, valArgs.b, valArgs.steps)
-                     .map(hsl => { return { color: Hsl.toCss(hsl), content: Hsl.toCss(hsl) }});
-    } 
-    // Sad Path
-    else {
-      const a = valArgs.aError ? { color: "black", content: valArgs.aError } : 
-                                 { color: Hsl.toCss(valArgs.a), content: Hsl.toCss(valArgs.a) };
-      const s = valArgs.stepsError ? { color: "black", content: valArgs.stepsError } : 
-                                     { color: "grey", content: valArgs.steps.toString() }; 
-      const b = valArgs.bError ? { color: "black", content: valArgs.bError } : 
-                                 { color: Hsl.toCss(valArgs.b), content: Hsl.toCss(valArgs.b) };
-      return [a,s,b];
-    }
+  // Happy Path
+  if (valArgs.aError == null && valArgs.bError == null && valArgs.stepsError == null) {
+    return Stepper.stepO(valArgs.a, valArgs.b, valArgs.steps)
+                  .map(hsl => { return { color: Hsl.toCss(hsl), content: Hsl.toCss(hsl) }});
+  } 
+  // Sad Path
+  else {
+    const a = valArgs.aError ? { color: "black", content: valArgs.aError } : 
+                                { color: Hsl.toCss(valArgs.a), content: Hsl.toCss(valArgs.a) };
+    const s = valArgs.stepsError ? { color: "black", content: valArgs.stepsError } : 
+                                    { color: "grey", content: valArgs.steps.toString() }; 
+    const b = valArgs.bError ? { color: "black", content: valArgs.bError } : 
+                                { color: Hsl.toCss(valArgs.b), content: Hsl.toCss(valArgs.b) };
+    return [a,s,b];
+  }
+}
+
+// [{ color: cssString, content: String }] -> HTML
+function layout(contentList) {
+  const height = `${100 / contentList.length}vh`;
+  return contentList.map(c => 
+    <div style= {{backgroundColor: c.color
+                , color: Hsl.toCss(Hsl.contrast(Hsl.fromCss(c.color)))
+                , height: height 
+                }}>
+      {c.content}
+    </div>
+  )
 }
 
 function Debug(params) {

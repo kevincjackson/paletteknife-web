@@ -3,14 +3,21 @@
 
 // Get a contrasting Hsl color. Useful for text.
 function contrast(hsl) {
-    let new_s = 0;
-    let new_l = hsl.s > 50 ? 0 : 100;
+    const new_s = 0;
+    const new_l = hsl.l > 50 ? 20 : 80;
     return { h: hsl.h, s: new_s, l: new_l }
 }
 
 // Hsl -> String like "hsl:0,100,50"
 function encode(hsl) {
     return `hsl:${hsl.h},${hsl.s},${hsl.l}`;
+}
+
+// String -> Hsl
+// "hsl(0, 1%, 2%)" -> { h: 0, s: 1, l: 2 }
+function fromCss(hslString) {
+    const xs = hslString.replace(/[ %hsl()]/g, "").split(",").map(x => parseFloat(x));
+    return { h: xs[0], s: xs[1], l: xs[2] }
 }
 
 // Check for a well formed Hsl object. -> Bool
@@ -48,6 +55,7 @@ function try_decode(hslString) {
 
 module.exports.contrast = contrast;
 module.exports.encode = encode;
+module.exports.fromCss = fromCss;
 module.exports.isValid = isValid;
 module.exports.rand = rand;
 module.exports.toCss = toCss;
