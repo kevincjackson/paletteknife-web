@@ -30,7 +30,7 @@ function rand() {
 // Hsl -> Css
 // Ex) { h: 120, s: 50, l: 100 } -> hsl(120, 50, 100).
 function toCss(obj) {
-    return `hsl(${obj.h},${obj.s}%,${obj.l}%)`;
+    return `hsl(${obj.h}, ${obj.s}%, ${obj.l}%)`;
 }
 
 // String -> Hsl || Null
@@ -38,8 +38,8 @@ function try_decode(hslString) {
     if (hslString.includes("hsl:")) {
         const xs = hslString.split(":")[1]
                             .split(",")
-                            .map(x => parseFloat(x));
-        if (xs.length === 3) {
+                            .map(x => parseFloat(x))
+        if (xs.every(x => !isNaN(x)) && xs.length === 3) {
             return { h: xs[0], s: xs[1] , l: xs[2] };
         }
     }
