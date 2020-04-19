@@ -4,7 +4,7 @@
 // Get a contrasting Hsl color. Useful for text.
 function contrast(hsl) {
     const new_s = 0;
-    const new_l = hsl.l > 50 ? 20 : 80;
+    const new_l = hsl.l > 40 ? 20 : 80;
     return { h: hsl.h, s: new_s, l: new_l }
 }
 
