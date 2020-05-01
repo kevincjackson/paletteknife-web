@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/paletteknife-web/static/css/main.5ecd60fb.chunk.css",
+    "main.js": "/paletteknife-web/static/js/main.56655c47.chunk.js",
+    "main.js.map": "/paletteknife-web/static/js/main.56655c47.chunk.js.map",
+    "runtime-main.js": "/paletteknife-web/static/js/runtime-main.d5c20edd.js",
+    "runtime-main.js.map": "/paletteknife-web/static/js/runtime-main.d5c20edd.js.map",
+    "static/js/2.9702a94b.chunk.js": "/paletteknife-web/static/js/2.9702a94b.chunk.js",
+    "static/js/2.9702a94b.chunk.js.map": "/paletteknife-web/static/js/2.9702a94b.chunk.js.map",
+    "index.html": "/paletteknife-web/index.html",
+    "precache-manifest.4d23e1d5bae290b8fe89205347a5f0e9.js": "/paletteknife-web/precache-manifest.4d23e1d5bae290b8fe89205347a5f0e9.js",
+    "service-worker.js": "/paletteknife-web/service-worker.js",
+    "static/css/main.5ecd60fb.chunk.css.map": "/paletteknife-web/static/css/main.5ecd60fb.chunk.css.map",
+    "static/js/2.9702a94b.chunk.js.LICENSE.txt": "/paletteknife-web/static/js/2.9702a94b.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d5c20edd.js",
+    "static/js/2.9702a94b.chunk.js",
+    "static/css/main.5ecd60fb.chunk.css",
+    "static/js/main.56655c47.chunk.js"
+  ]
+}
